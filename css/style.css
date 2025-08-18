@@ -118,7 +118,7 @@ header.cabecalho h1 {
     gap: 20px;
     padding: 20px;
     width: 100%;
-    max-width: 1200px;
+    max-width: 950px;
     max-height: 800px;
     margin-bottom: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -223,10 +223,10 @@ header.cabecalho h1 {
 
 #livro-preview {
     position: absolute;
-    top: 140px;
+    top: 130px;
     right: 30px;
-    width: 650px;
-    height: 740px;
+    width: 500px;
+    height: 520px;
     background-color: #fff;
     padding: 24px;
     box-shadow: -2px 0 12px rgba(0, 0, 0, 0.2);
@@ -395,7 +395,7 @@ header.cabecalho h1 {
 .btn-lista {
     position: fixed;
     bottom: 10px;
-    right: 620px;
+    right: 475px;
     background-color: #362192;
     color: whitesmoke;
     border: none;
@@ -489,9 +489,9 @@ header.cabecalho h1 {
     align-items: center;
     position: fixed;
     right: 30px;
-    top: 140px;
-    width: 650px;
-    height: 740px;
+    top: 130px;
+    width: 500px;
+    height: 520px;
     background: linear-gradient(145deg, rgba(85, 85, 85, 0.3), rgba(34, 34, 34, 0.3));
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
