@@ -124,8 +124,8 @@ delete
 
         card.onmouseenter = () => {
             const preview = document.getElementById("livro-preview");
-            const sinopseLimitada = livro.descricao.length > 1400
-                ? livro.descricao.slice(0, 1200) + "..."
+            const sinopseLimitada = livro.descricao.length > 300
+                ? livro.descricao.slice(0, 200) + "..."
                 : livro.descricao;
 
             preview.innerHTML = `
@@ -289,4 +289,5 @@ document.getElementById("alternar-visualizacao").addEventListener("click", () =>
     }
 
     renderizarLivros(); // Atualiza a visualização com o novo modo
+
 });
