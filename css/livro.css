@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :root {
     --bg: #ffca8e;
     --card: #f5f7fb;
@@ -45,6 +46,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    }
 }
 
 .info h2 {
@@ -188,4 +190,5 @@ button:active {
     .voltar {
         align-self: center;
     }
+>>>>>>> 79a2bc6e5afadf07ebe74fe1b25e6e5e2db254f8
 }

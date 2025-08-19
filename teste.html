@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,3 +49,93 @@
     <script src="js/app.js"></script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minha Biblioteca</title>
+    <link rel="stylesheet" href="teste.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body>
+    <header class="cabecalho">
+        <div class="perfil">
+            <span class="material-symbols-outlined" class="PerfilEdit"
+                onclick="abrirModalPerfil()">account_circle</span>
+            <h1>Estante da</h1>
+        </div>
+        <div class="botoes-cabecalho">
+            <input type="text" id="Buscar" placeholder="Procurar por obra..." oninput="filtrarLivros()">
+            <button id="adicionar-btn" onclick="abrirModal()">Adicionar Livro</button>
+        </div>
+    </header>
+
+    <div id="modalPerfil" class="modalPerfil">
+        <div class="modalPerfil-content">
+            <h2>Informe o seu nome</h2>
+            <input type="text" id="nomeInput" placeholder="Nome...">
+
+            <div class="genero">
+                <label><input type="radio" name="genero" value="feminino" checked> Feminino</label>
+                <label><input type="radio" name="genero" value="masculino"> Masculino</label>
+            </div>
+
+            <button class="ConfirmarNome">Confirmar</button>
+            <button onclick="fecharModalPerfil()" class="fechaPerfilEdit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                    <path
+                        d="M 7.21875 5.78125 L 5.78125 7.21875 L 14.5625 16 L 5.78125 24.78125 L 7.21875 26.21875 L 16 17.4375 L 24.78125 26.21875 L 26.21875 24.78125 L 17.4375 16 L 26.21875 7.21875 L 24.78125 5.78125 L 16 14.5625 Z">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="pagina">
+        <div id="livros-container"></div>
+    
+        <div id="livro-preview" style="display: none;"></div>
+    
+        <button id="alternar-visualizacao" class="btn-lista">
+            <span class="material-symbols-outlined" id="icone-visualizacao">list</span>
+        </button>
+    
+        <div class="logo-container">
+            <img src="img/Logo design for 'Est.png" alt="logo" class="logo">
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Adicionar Livro</h2>
+            <input type="text" id="tituloInput" placeholder="Título do livro" />
+            <input type="text" id="autorInput" placeholder="Autor" />
+            <button onclick="buscarELivro()">Buscar e Adicionar</button>
+            <button onclick="fecharModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
+
+
+<!--
+- Adicionar livro (FEITO)
+- salvar biblioteca em um arquivo externo(!)
+- editar informacao dos livros (!)
+- enviar listas para o telefone (!)
+- lupa de procurar livro dentro da biblioteca
+- remover livro (FEITO)
+- filtro na biblioteca (mudar ordem por nome de autor, titulo ou data)[< ou >]-->
+
+
+<!--Menu de opcoes para interacoes [FEITO] (Adicionar livro, Editar informacoes, enviar para o telefone, lupa de filtro)-->
+>>>>>>> 79a2bc6e5afadf07ebe74fe1b25e6e5e2db254f8
