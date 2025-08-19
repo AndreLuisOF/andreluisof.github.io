@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+    <style>
+        .botoes {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background: blue;
+            color: #f2f2f2;
+            padding: 10px 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 2px 4px rgba(0, 0, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="botoes">
+        <a href="index.html"><button>Voltar ao site</button></a>
+        <button onclick="abrirModalManual()">abrir modal</button>
+    </div>
+
+     <div id="modalManual" class="modalManual">
+        <div class="modal-content">
+            <input id="tituloInput" type="text" placeholder="Titulo da obra..." required>
+            <input type="file" id="capaManual" name="capaManual" accept="image/*" required>
+            <input id="autorInput" type="text" placeholder="Nome do Autor...">
+            <input id="codigoInput" type="number" placeholder="Código ISBN...">
+            <input id="volumeInput" type="text" placeholder="Volume...">
+            <input id="paginasINput" type="number" placeholder="Quantas páginas...">
+            <input id="sinopseInput" type="sinopse" placeholder="Sinopse...">
+            <input id="dataInput" type="date">
+            <div class="botoesModal">
+                <button>Adicionar</button>
+                <button onclick="fechaModalManual()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
