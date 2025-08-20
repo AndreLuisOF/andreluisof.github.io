@@ -128,38 +128,45 @@ function buscarPorISBN() {
 
 function adicionarLivroManual() {
   const titulo = document.getElementById("tituloInput").value.trim();
-  const autor = document.getElementById("autorInput").value.trim() || "Autor desconhecido";
+  const autor =
+    document.getElementById("autorInput").value.trim() || "Autor desconhecido";
   const capaInput = document.getElementById("capaManual");
-  const codigo = document.getElementById("codigoInput").value.trim() || "Não disponível";
+  const codigo =
+    document.getElementById("codigoInput").value.trim() || "Não disponível";
   const volume = document.getElementById("volumeInput").value.trim();
   const paginas = document.getElementById("paginasInput").value.trim() || "N/D";
-  const sinopse = document.getElementById("sinopseInput").value.trim() || "Sinopse não disponível.";
+  const sinopse =
+    document.getElementById("sinopseInput").value.trim() ||
+    "Sinopse não disponível.";
   const data = document.getElementById("dataInput").value || "Não informada";
 
-  // Validação simples
   if (!titulo || !capaInput.files[0]) {
     alert("Preencha o título e selecione uma capa.");
     return;
   }
 
-  // Criar URL da imagem da capa
-  const capaURL = URL.createObjectURL(capaInput.files[0]);
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const capaBase64 = e.target.result;
 
-  const novoLivro = {
-    titulo,
-    autor,
-    capa: capaURL,
-    volume,
-    dataLancamento: data,
-    paginas,
-    isbn: codigo,
-    descricao: sinopse,
+    const novoLivro = {
+      titulo,
+      autor,
+      capa: capaBase64, // agora é base64
+      volume,
+      dataLancamento: data,
+      paginas,
+      isbn: codigo,
+      descricao: sinopse,
+    };
+
+    livros.unshift(novoLivro);
+    localStorage.setItem("bibliotecaLivros", JSON.stringify(livros));
+    renderizarLivros();
+    fecharModalManual();
   };
 
-  livros.unshift(novoLivro);
-  localStorage.setItem("bibliotecaLivros", JSON.stringify(livros));
-  renderizarLivros();
-  fecharModalManual();
+  reader.readAsDataURL(capaInput.files[0]); // converte para base64
 }
 
 // Cria objeto livro padronizado
