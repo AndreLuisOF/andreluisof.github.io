@@ -320,3 +320,18 @@ document
 
     renderizarLivros();
   });
+
+function ordenarAZ() {
+  livros.sort((a, b) => a.titulo.localeCompare(b.titulo));
+  renderizarLivros();
+}
+
+function ordenarZA() {
+  livros.sort((a, b) => b.titulo.localeCompare(a.titulo));
+  renderizarLivros();
+}
+
+function ordemPadrao() {
+  livros = JSON.parse(localStorage.getItem("bibliotecaLivros")) || [];
+  renderizarLivros();
+}

@@ -321,9 +321,7 @@ header.cabecalho h1 {
 
 /* Lista/grid da biblioteca */
 .btn-lista {
-  position: fixed;
-  bottom: 10px;
-  right: 475px;
+
   background-color: #362192;
   color: #f5f5f5;
   border: none;
@@ -337,6 +335,14 @@ header.cabecalho h1 {
 
 .btn-lista:hover {
   background-color: #1fb5f0;
+}
+
+.botoes-ordenacao {
+  display: flex;
+  position: fixed;
+  bottom: 15px;
+  right: 290px;
+  gap: 10px;
 }
 
 /* Modo lista */
