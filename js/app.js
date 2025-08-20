@@ -322,12 +322,12 @@ document
   });
 
 function ordenarAZ() {
-  livros.sort((a, b) => a.titulo.localeCompare(b.titulo));
+  livros.sort((a, b) => a.autor.localeCompare(b.autor));
   renderizarLivros();
 }
 
 function ordenarZA() {
-  livros.sort((a, b) => b.titulo.localeCompare(a.titulo));
+  livros.sort((a, b) => b.autor.localeCompare(a.autor));
   renderizarLivros();
 }
 
