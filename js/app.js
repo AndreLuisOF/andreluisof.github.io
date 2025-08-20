@@ -19,7 +19,7 @@ function abrirModal() {
   abrirModalPorId("modal");
 }
 function fecharModal() {
-  fecharModalPorId("modal", ["tituloInput", "autorInput"]);
+  fecharModalPorId("modal", ["tituloBuscaInput", "autorBuscaInput"]);
 }
 function abrirModalCodigo() {
   abrirModalPorId("modalCodigo");
@@ -51,8 +51,8 @@ function fecharModalPerfil() {
 
 // Busca por título e autor
 function buscarELivro() {
-  const titulo = document.getElementById("tituloInput").value;
-  const autor = document.getElementById("autorInput").value;
+  const titulo = document.getElementById("tituloBuscaInput").value;
+  const autor = document.getElementById("autorBuscaInput").value;
 
   if (!titulo || !autor) {
     alert("Preencha título e autor!");
@@ -75,7 +75,7 @@ function buscarELivro() {
       const livro = data.items[0].volumeInfo;
       const livroObj = criarLivroObj(livro);
 
-      livros.push(livroObj);
+      livros.unshift(livroObj);
       localStorage.setItem("bibliotecaLivros", JSON.stringify(livros));
       renderizarLivros();
       fecharModal();
@@ -116,7 +116,7 @@ function buscarPorISBN() {
         return;
       }
 
-      livros.push(livroObj);
+      livros.unshift(livroObj);
       localStorage.setItem("bibliotecaLivros", JSON.stringify(livros));
       renderizarLivros();
       fecharModalCodigo();
@@ -156,7 +156,7 @@ function adicionarLivroManual() {
     descricao: sinopse,
   };
 
-  livros.push(novoLivro);
+  livros.unshift(novoLivro);
   localStorage.setItem("bibliotecaLivros", JSON.stringify(livros));
   renderizarLivros();
   fecharModalManual();
