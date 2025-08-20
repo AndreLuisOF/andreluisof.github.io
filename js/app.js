@@ -126,6 +126,42 @@ function buscarPorISBN() {
     });
 }
 
+function adicionarLivroManual() {
+  const titulo = document.getElementById("tituloInput").value.trim();
+  const autor = document.getElementById("autorInput").value.trim() || "Autor desconhecido";
+  const capaInput = document.getElementById("capaManual");
+  const codigo = document.getElementById("codigoInput").value.trim() || "Não disponível";
+  const volume = document.getElementById("volumeInput").value.trim();
+  const paginas = document.getElementById("paginasInput").value.trim() || "N/D";
+  const sinopse = document.getElementById("sinopseInput").value.trim() || "Sinopse não disponível.";
+  const data = document.getElementById("dataInput").value || "Não informada";
+
+  // Validação simples
+  if (!titulo || !capaInput.files[0]) {
+    alert("Preencha o título e selecione uma capa.");
+    return;
+  }
+
+  // Criar URL da imagem da capa
+  const capaURL = URL.createObjectURL(capaInput.files[0]);
+
+  const novoLivro = {
+    titulo,
+    autor,
+    capa: capaURL,
+    volume,
+    dataLancamento: data,
+    paginas,
+    isbn: codigo,
+    descricao: sinopse,
+  };
+
+  livros.push(novoLivro);
+  localStorage.setItem("bibliotecaLivros", JSON.stringify(livros));
+  renderizarLivros();
+  fecharModalManual();
+}
+
 // Cria objeto livro padronizado
 function criarLivroObj(livro, isbnFallback = "Não disponível") {
   return {
@@ -214,50 +250,6 @@ function criarCardLivro(livro, index) {
 
   card.appendChild(excluirBtn);
   return card;
-}
-
-function adicionarLivroManual() {
-  const titulo = document.getElementById("tituloInput").value.trim();
-  const autor =
-    document.getElementById("autorInput").value.trim() || "Autor desconhecido";
-  const isbn =
-    document.getElementById("codigoInput").value.trim() || "Não disponível";
-  const volume = document.getElementById("volumeInput").value.trim();
-  const paginas = document.getElementById("paginasINput").value.trim() || "N/D";
-  const descricao =
-    document.getElementById("sinopseInput").value.trim() ||
-    "Sinopse não disponível.";
-  const dataLancamento =
-    document.getElementById("dataInput").value || "Não informada";
-  const capaInput = document.getElementById("capaManual");
-
-  if (!titulo || !autor || !capaInput.files[0]) {
-    alert("Preencha título, autor e selecione uma capa!");
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const capa = e.target.result;
-
-    const livroObj = {
-      titulo,
-      autor,
-      capa,
-      volume,
-      dataLancamento,
-      paginas,
-      isbn,
-      descricao,
-    };
-
-    livros.push(livroObj);
-    localStorage.setItem("bibliotecaLivros", JSON.stringify(livros));
-    renderizarLivros();
-    fechaModalManual();
-  };
-
-  reader.readAsDataURL(capaInput.files[0]);
 }
 
 // Renderiza todos os livros

@@ -1,135 +1,114 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Minha Biblioteca</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
-  </head>
 
-  <body>
-    <header class="cabecalho">
-      <div class="perfil">
-        <span
-          class="material-symbols-outlined PerfilEdit"
-          onclick="abrirModalPerfil()"
-          >account_circle</span
-        >
-        <h1>Estante da</h1>
-      </div>
-      <div class="botoes-cabecalho">
-        <input
-          type="text"
-          id="Buscar"
-          placeholder="Procurar por obra..."
-          oninput="filtrarLivros()"
-        />
-        <button id="adicionar-btn" type="button" onclick="abrirModal()">
-          Adicionar Livro
-        </button>
-        <button
-          id="adicionarManual-btn"
-          type="button"
-          onclick="abrirModalManual()"
-        >
-          Adicionar Livro Manual
-        </button>
-        <button
-          id="adicionarCodigo-btn"
-          type="button"
-          onclick="abrirModalCodigo()"
-        >
-          Adicionar Livro pelo ISBN
-        </button>
-        <a href="teste.html" target="_blank"
-          ><button type="button">TESTE</button></a
-        >
-      </div>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Minha Biblioteca</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
 
-    <div id="modalCodigo" class="modalCodigo">
-      <div class="modal-content">
-        <h2>Informe o código ISBN:</h2>
-        <input type="number" id="isbnInput" />
-        <button type="button" onclick="buscarPorISBN()">
-          Buscar e Adicionar
-        </button>
-        <button
-          type="button"
-          onclick="fecharModalCodigo()"
-          class="fecharModalCodigo"
-        >
-          Cancelar
-        </button>
+<body>
+  <header class="cabecalho">
+    <div class="perfil">
+      <span class="material-symbols-outlined PerfilEdit" onclick="abrirModalPerfil()">account_circle</span>
+      <h1>Estante da</h1>
+    </div>
+    <div class="botoes-cabecalho">
+      <input type="text" id="Buscar" placeholder="Procurar por obra..." oninput="filtrarLivros()" />
+      <button id="adicionar-btn" type="button" onclick="abrirModal()">
+        Adicionar Livro
+      </button>
+      <button id="adicionarManual-btn" type="button" onclick="abrirModalManual()">
+        Adicionar Livro Manual
+      </button>
+      <button id="adicionarCodigo-btn" type="button" onclick="abrirModalCodigo()">
+        Adicionar Livro pelo ISBN
+      </button>
+      <a href="teste.html" target="_blank"><button type="button">TESTE</button></a>
+    </div>
+  </header>
+
+  <div id="modalManual" class="modalManual">
+    <div class="modal-content">
+      <input id="tituloInput" type="text" placeholder="Titulo da obra..." required />
+      <input type="file" id="capaManual" name="capaManual" accept="image/*" required />
+      <input id="autorInput" type="text" placeholder="Nome do Autor..." />
+      <input id="codigoInput" type="number" placeholder="Código ISBN..." />
+      <input id="volumeInput" type="text" placeholder="Volume..." />
+      <input id="paginasInput" type="number" placeholder="Quantas páginas..." />
+      <input id="sinopseInput" type="text" placeholder="Sinopse..." />
+      <input id="dataInput" type="date" />
+      <div class="botoesModal">
+        <button onclick="adicionarLivroManual()">Adicionar</button>
+        <button onclick="fecharModalManual()">Cancelar</button>
       </div>
     </div>
+  </div>
 
-    <div id="modalPerfil" class="modalPerfil">
-      <div class="modalPerfil-content">
-        <h2>Informe o seu nome</h2>
-        <input type="text" id="nomeInput" placeholder="Nome..." />
+  <div id="modalCodigo" class="modalCodigo">
+    <div class="modal-content">
+      <h2>Informe o código ISBN:</h2>
+      <input type="number" id="isbnInput" />
+      <button type="button" onclick="buscarPorISBN()">
+        Buscar e Adicionar
+      </button>
+      <button type="button" onclick="fecharModalCodigo()" class="fecharModalCodigo">
+        Cancelar
+      </button>
+    </div>
+  </div>
 
-        <div class="genero">
-          <label
-            ><input type="radio" name="genero" value="feminino" checked />
-            Feminino</label
-          >
-          <label
-            ><input type="radio" name="genero" value="masculino" />
-            Masculino</label
-          >
-        </div>
+  <div id="modalPerfil" class="modalPerfil">
+    <div class="modalPerfil-content">
+      <h2>Informe o seu nome</h2>
+      <input type="text" id="nomeInput" placeholder="Nome..." />
 
-        <button type="button" class="ConfirmarNome">Confirmar</button>
-        <button
-          type="button"
-          onclick="fecharModalPerfil()"
-          class="fechaPerfilEdit"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 32 32"
-          >
-            <path
-              d="M 7.21875 5.78125 L 5.78125 7.21875 L 14.5625 16 L 5.78125 24.78125 L 7.21875 26.21875 L 16 17.4375 L 24.78125 26.21875 L 26.21875 24.78125 L 17.4375 16 L 26.21875 7.21875 L 24.78125 5.78125 L 16 14.5625 Z"
-            ></path>
-          </svg>
-        </button>
+      <div class="genero">
+        <label><input type="radio" name="genero" value="feminino" checked />
+          Feminino</label>
+        <label><input type="radio" name="genero" value="masculino" />
+          Masculino</label>
       </div>
+
+      <button type="button" class="ConfirmarNome">Confirmar</button>
+      <button type="button" onclick="fecharModalPerfil()" class="fechaPerfilEdit">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+          <path
+            d="M 7.21875 5.78125 L 5.78125 7.21875 L 14.5625 16 L 5.78125 24.78125 L 7.21875 26.21875 L 16 17.4375 L 24.78125 26.21875 L 26.21875 24.78125 L 17.4375 16 L 26.21875 7.21875 L 24.78125 5.78125 L 16 14.5625 Z">
+          </path>
+        </svg>
+      </button>
     </div>
+  </div>
 
-    <div id="livros-container"></div>
-    <div id="livro-preview" style="display: none"></div>
+  <div id="livros-container"></div>
+  <div id="livro-preview" style="display: none"></div>
 
-    <button id="alternar-visualizacao" class="btn-lista" type="button">
-      <span class="material-symbols-outlined" id="icone-visualizacao"
-        >list</span
-      >
-    </button>
+  <button id="alternar-visualizacao" class="btn-lista" type="button">
+    <span class="material-symbols-outlined" id="icone-visualizacao">list</span>
+  </button>
 
-    <div class="logo-container">
-      <img src="img/Logo design for 'Est.png" alt="logo" class="logo" />
+  <div class="logo-container">
+    <img src="img/Logo design for 'Est.png" alt="logo" class="logo" />
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2>Adicionar Livro</h2>
+      <input type="text" id="tituloInput" placeholder="Título do livro" />
+      <input type="text" id="autorInput" placeholder="Autor" />
+      <button type="button" onclick="buscarELivro()">
+        Buscar e Adicionar
+      </button>
+      <button type="button" onclick="fecharModal()">Cancelar</button>
     </div>
+  </div>
 
-    <!-- Modal -->
-    <div id="modal" class="modal">
-      <div class="modal-content">
-        <h2>Adicionar Livro</h2>
-        <input type="text" id="tituloInput" placeholder="Título do livro" />
-        <input type="text" id="autorInput" placeholder="Autor" />
-        <button type="button" onclick="buscarELivro()">
-          Buscar e Adicionar
-        </button>
-        <button type="button" onclick="fecharModal()">Cancelar</button>
-      </div>
-    </div>
+  <script src="js/app.js"></script>
+</body>
 
-    <script src="js/app.js"></script>
-  </body>
 </html>
