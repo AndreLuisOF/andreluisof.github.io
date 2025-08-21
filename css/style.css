@@ -35,6 +35,23 @@ header.cabecalho h1 {
   font-family: "Segoe UI", sans-serif;
 }
 
+#contador-livros {
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Segoe UI", sans-serif;
+  color: #f5f5f5;
+  background-color: #213e7c;
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+#contador-livros:hover {
+  background-color: #1fb5f0;
+  transform: scale(1.05);
+}
+
 .perfil {
   display: flex;
   align-items: center;
@@ -321,7 +338,6 @@ header.cabecalho h1 {
 
 /* Lista/grid da biblioteca */
 .btn-lista {
-
   background-color: #362192;
   color: #f5f5f5;
   border: none;
@@ -449,6 +465,54 @@ header.cabecalho h1 {
   }
 }
 
+@media (min-width: 1920px) {
+  header.cabecalho {
+    padding: 20px 60px;
+  }
+  #livros-container {
+    top: 130px;
+    max-width: 1200px;
+    max-height: 800px;
+  }
+  .livro {
+    width: 180px;
+    height: 270px;
+  }
+  #livro-preview {
+    width: 620px;
+    height: 700px;
+  }
+  .logo-container {
+    width: 620px;
+    height: 700px;
+    top: 130px;
+  }
+  .botoes-ordenacao {
+    right: 410px;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1919px) {
+  #livros-container {
+    top: 130px;
+    max-width: 850px;
+    max-height: 750px;
+  }
+  .livro {
+    width: 170px;
+    height: 225px;
+  }
+  #livro-preview {
+    width: 500px;
+    height: 600px;
+  }
+  .logo-container {
+    width: 500px;
+    height: 680px;
+    top: 130px;
+  }
+}
+
 /* Responsivo */
 @media (max-width: 600px) {
   #livros-container {
@@ -461,6 +525,12 @@ header.cabecalho h1 {
   .livro {
     width: 140px;
     height: 210px;
+  }
+  #livro-preview {
+    display: none;
+  }
+  .logo-container {
+    display: none;
   }
 }
 

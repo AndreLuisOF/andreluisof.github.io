@@ -1,40 +1,69 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Detalhes do Livro</title>
-    <link rel="stylesheet" href="css/livro.css">
-</head>
+    <link rel="stylesheet" href="css/livro.css" />
+  </head>
 
-<body>
-    <div class="btn-container">
+  <body>
+    <div class="conteudo">
+      <div class="btn-container">
         <button id="editarBtn" onclick="habilitarEdicao()">✏️ Editar</button>
-        <button id="salvarBtn" onclick="salvarEdicao()" style="display:none;">💾 Salvar</button>
-        <button id="cancelarBtn" onclick="cancelarEdicao()" style="display:none;">❌ Cancelar</button>
-    </div>
-    <div class="card">
+        <button id="salvarBtn" onclick="salvarEdicao()" style="display: none">
+          💾 Salvar
+        </button>
+        <button
+          id="cancelarBtn"
+          onclick="cancelarEdicao()"
+          style="display: none"
+        >
+          ❌ Cancelar
+        </button>
+      </div>
+      <div class="card">
         <div class="capa">
-            <img id="capa" src="" alt="Capa do livro" />
+          <img id="capa" src="" alt="Capa do livro" />
+          <input
+            type="file"
+            id="novaCapaInput"
+            accept="image/*"
+            style="display: none"
+          />
         </div>
         <div class="info">
-            <h2 id="titulo">Título do Livro</h2>
-            <div class="sub">Ficha Técnica</div>
-            <div class="item"><strong>Autor:</strong><span id="autor" contenteditable="false"></span></div>
-            <div class="item"><strong>Volume:</strong><span id="volume" contenteditable="false"></span></div>
-            <div class="item"><strong>Lançamento:</strong><span id="data" contenteditable="false"></span></div>
-            <div class="item"><strong>Páginas:</strong><span id="paginas" contenteditable="false"></span></div>
-            <div class="item"><strong>ISBN:</strong><span id="isbn" contenteditable="false"></span></div>
-            <div class="sinopse">
-                <strong>Sinopse:</strong>
-                <p id="descricao" contenteditable="false"></p>
-            </div>
-            <a href="index.html" class="voltar">⬅ Voltar</a>
+          <h2 id="titulo" contenteditable="false">Título do Livro</h2>
+          <div class="sub">Ficha Técnica</div>
+          <div class="item">
+            <strong>Autor:</strong
+            ><span id="autor" contenteditable="false"></span>
+          </div>
+          <div class="item">
+            <strong>Volume:</strong
+            ><span id="volume" contenteditable="false"></span>
+          </div>
+          <div class="item">
+            <strong>Lançamento:</strong
+            ><span id="data" contenteditable="false"></span>
+          </div>
+          <div class="item">
+            <strong>Páginas:</strong
+            ><span id="paginas" contenteditable="false"></span>
+          </div>
+          <div class="item">
+            <strong>ISBN:</strong
+            ><span id="isbn" contenteditable="false"></span>
+          </div>
+          <div class="sinopse">
+            <strong>Sinopse:</strong>
+            <p id="descricao" contenteditable="false"></p>
+          </div>
+          <a href="index.html" class="voltar">⬅ Voltar</a>
         </div>
+      </div>
     </div>
 
     <script src="js/livro.js"></script>
-</body>
-
+  </body>
 </html>

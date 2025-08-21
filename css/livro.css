@@ -101,10 +101,10 @@ body {
   background-color: #005fa3;
 }
 
-.btn-container {
-  position: fixed;
-  top: 150px;
-  right: 450px;
+.conteudo{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 button {
@@ -164,6 +164,12 @@ button:active {
   padding: 8px;
   resize: vertical;
   overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+  .card {
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px) {

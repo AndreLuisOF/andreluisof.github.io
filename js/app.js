@@ -63,6 +63,26 @@ function fecharModalPerfil() {
   fecharModalPorId("modalPerfil");
 }
 
+document.querySelector(".ConfirmarNome").addEventListener("click", () => {
+  const nome = document.getElementById("nomeInput").value.trim();
+  const genero = document.querySelector('input[name="genero"]:checked').value;
+
+  if (!nome) {
+    alert("Por favor, informe seu nome.");
+    return;
+  }
+
+  const artigo = genero === "feminino" ? "da" : "do";
+  const titulo = document.querySelector(".cabecalho h1");
+  titulo.textContent = `Estante ${artigo} ${nome}`;
+
+  // Salva no localStorage para manter após recarregar
+  const perfil = { nome, artigo };
+  localStorage.setItem("perfilUsuario", JSON.stringify(perfil));
+
+  fecharModalPerfil();
+});
+
 // Criar objeto livro
 function criarLivroObj(livro, isbnFallback = "Não disponível") {
   return {
@@ -283,9 +303,13 @@ async function renderizarLivros() {
 
   request.onsuccess = function () {
     const container = document.getElementById("livros-container");
+    const contador = document.getElementById("contador-livros");
     container.innerHTML = "";
 
     const livros = request.result.sort((a, b) => b.dataAdicao - a.dataAdicao);
+
+    // Atualiza o contador
+    contador.textContent = `${livros.length} Livros`;
 
     livros.forEach((livro) => {
       container.appendChild(criarCardLivro(livro));
