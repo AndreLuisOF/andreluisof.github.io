@@ -513,6 +513,12 @@ header.cabecalho h1 {
   }
 }
 
+@media (max-height: 800px) {
+  .logo-container {
+    height: 580px;
+  }
+}
+
 /* Responsivo */
 @media (max-width: 600px) {
   #livros-container {
