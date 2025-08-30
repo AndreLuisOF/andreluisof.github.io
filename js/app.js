@@ -1,3 +1,16 @@
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyATX6gSUj9v813AeXaedC5sBnsoY1fDZDI",
+  authDomain: "mylibrary-6087f.firebaseapp.com",
+  projectId: "mylibrary-6087f",
+  storageBucket: "mylibrary-6087f.appspot.com", // Corrija aqui: .appspot.com
+  messagingSenderId: "712686716796",
+  appId: "1:712686716796:web:41ad7dccecd49557acc6f9",
+  measurementId: "G-DK6HL0GRYN"
+};
+firebase.initializeApp(firebaseConfig);
+const dbFirestore = firebase.firestore();
+
 // IndexedDB setup
 function abrirBanco() {
   return new Promise((resolve, reject) => {
@@ -100,6 +113,8 @@ function criarLivroObj(livro, isbnFallback = "Não disponível") {
     paginas: livro.pageCount || "N/D",
     isbn: livro.industryIdentifiers?.[0]?.identifier || isbnFallback,
     descricao: livro.description || "Sinopse não disponível.",
+    editora: livro.publisher || "Não informada",
+    serie: livro.series || livro.seriesInfo?.bookDisplayNumber || "",
     dataAdicao: Date.now(),
   };
 }
@@ -110,6 +125,38 @@ async function salvarLivro(livroObj) {
   const tx = db.transaction("livros", "readwrite");
   tx.objectStore("livros").add(livroObj);
   tx.oncomplete = () => renderizarLivros();
+}
+
+// Salvar livro na nuvem
+async function salvarLivroNaNuvem(livroObj) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  await dbFirestore.collection("usuarios").doc(user.uid).collection("livros").add(livroObj);
+  renderizarLivrosDaNuvem();
+}
+
+// Buscar livros da nuvem
+async function renderizarLivrosDaNuvem() {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  const snapshot = await dbFirestore.collection("usuarios").doc(user.uid).collection("livros").orderBy("dataAdicao", "desc").get();
+  const livros = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+  const container = document.getElementById("livros-container");
+  const contador = document.getElementById("contador-livros");
+  container.innerHTML = "";
+  contador.textContent = `${livros.length} Livros`;
+
+  livros.forEach((livro) => {
+    container.appendChild(criarCardLivro(livro));
+  });
+
+  // Adicione este bloco para alternar a classe modo-lista
+  if (modoLista) {
+    container.classList.add("modo-lista");
+  } else {
+    container.classList.remove("modo-lista");
+  }
 }
 
 // Buscar por título e autor
@@ -199,6 +246,8 @@ function adicionarLivroManual() {
     document.getElementById("sinopseInput").value.trim() ||
     "Sinopse não disponível.";
   const data = document.getElementById("dataInput").value || "Não informada";
+  const editora = document.getElementById("editoraInput")?.value.trim() || "Não informada";
+  const serie = document.getElementById("serieInput")?.value.trim() || "";
 
   if (!titulo || !capaInput.files[0]) {
     alert("Preencha o título e selecione uma capa.");
@@ -217,9 +266,11 @@ function adicionarLivroManual() {
       paginas,
       isbn: codigo,
       descricao: sinopse,
+      editora,
+      serie,
       dataAdicao: Date.now(),
     };
-    salvarLivro(novoLivro);
+    salvarLivroNaNuvem(novoLivro); // <-- aqui!
     fecharModalManual();
   };
   reader.readAsDataURL(capaInput.files[0]);
@@ -231,6 +282,14 @@ async function excluirLivro(id) {
   const tx = db.transaction("livros", "readwrite");
   tx.objectStore("livros").delete(id);
   tx.oncomplete = () => renderizarLivros();
+}
+
+// Excluir livro na nuvem
+async function excluirLivroNaNuvem(id) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+  await dbFirestore.collection("usuarios").doc(user.uid).collection("livros").doc(id).delete();
+  renderizarLivrosDaNuvem();
 }
 
 // Criar card
@@ -275,6 +334,8 @@ function criarCardLivro(livro) {
       <p><strong>Data de lançamento:</strong> ${livro.dataLancamento}</p>
       <p><strong>Páginas:</strong> ${livro.paginas}</p>
       <p><strong>ISBN:</strong> ${livro.isbn}</p>
+      <p><strong>Editora:</strong> ${livro.editora || "Não informada"}</p>
+      <p><strong>Série:</strong> ${livro.serie || "Não informada"}</p>
       <div class="sinopse"><h4>Sinopse</h4><p>${sinopseLimitada}</p></div>
     `;
     preview.style.display = "block";
@@ -419,3 +480,36 @@ document.addEventListener("DOMContentLoaded", () => {
       renderizarLivros();
     });
 });
+
+function mostrarErroAuth(msg) {
+  document.getElementById("erroAuth").textContent = msg;
+}
+
+function cadastrarUsuario() {
+  const email = document.getElementById("emailInput").value.trim();
+  const senha = document.getElementById("senhaInput").value.trim();
+  mostrarErroAuth("");
+  firebase.auth().createUserWithEmailAndPassword(email, senha)
+    .then(() => {
+      fecharModalPerfil();
+      alert("Cadastro realizado com sucesso!");
+      // Aqui você pode chamar sua função para buscar/salvar livros na API
+    })
+    .catch((error) => {
+      mostrarErroAuth(error.message);
+    });
+}
+
+function loginUsuario() {
+  const email = document.getElementById("emailInput").value.trim();
+  const senha = document.getElementById("senhaInput").value.trim();
+  mostrarErroAuth("");
+  firebase.auth().signInWithEmailAndPassword(email, senha)
+    .then(() => {
+      fecharModalPerfil();
+      renderizarLivrosDaNuvem(); // <-- aqui!
+    })
+    .catch((error) => {
+      mostrarErroAuth(error.message);
+    });
+}

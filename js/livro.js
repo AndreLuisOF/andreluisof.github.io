@@ -56,6 +56,10 @@ function preencherPaginaLivro(livro) {
   document.getElementById("descricao").textContent =
     livro.descricao || "Sinopse não disponível.";
 
+  // Novos campos
+  document.getElementById("editora").textContent = livro.editora || "Não informada";
+  document.getElementById("serie").textContent = livro.serie || "Não informada";
+
   // Armazena o livro atual para edição
   window.livroAtual = livro;
 }
@@ -70,6 +74,8 @@ function habilitarEdicao() {
     "paginas",
     "isbn",
     "descricao",
+    "editora",
+    "serie",
   ];
   campos.forEach((id) => {
     document.getElementById(id).contentEditable = "true";

@@ -1,141 +1,202 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minha Biblioteca</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Minha Biblioteca</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-</head>
+  <body>
+    <header class="cabecalho">
+      <div class="perfil">
+        <span
+          class="material-symbols-outlined PerfilEdit"
+          onclick="abrirModalPerfil()"
+          >account_circle</span
+        >
+        <h1>Minha Estante</h1>
+        <div id="contador-livros">0 Livros</div>
+      </div>
+      <div class="botoes-cabecalho">
+        <input
+          type="text"
+          id="Buscar"
+          placeholder="Procurar por obra..."
+          oninput="filtrarLivros()"
+        />
+        <button id="adicionar-btn" type="button" onclick="abrirModal()">
+          Adicionar Livro
+        </button>
+        <button
+          id="adicionarManual-btn"
+          type="button"
+          onclick="abrirModalManual()"
+        >
+          Adicionar Livro Manual
+        </button>
+        <button
+          id="adicionarCodigo-btn"
+          type="button"
+          onclick="abrirModalCodigo()"
+        >
+          Adicionar Livro pelo ISBN
+        </button>
+      </div>
+    </header>
 
-<body>
-  <header class="cabecalho">
-    <div class="perfil">
-      <span class="material-symbols-outlined PerfilEdit" onclick="abrirModalPerfil()">account_circle</span>
-      <h1>Estante da</h1>
-      <div id="contador-livros">0 Livros</div>
-    </div>
-    <div class="botoes-cabecalho">
-      <input type="text" id="Buscar" placeholder="Procurar por obra..." oninput="filtrarLivros()" />
-      <button id="adicionar-btn" type="button" onclick="abrirModal()">
-        Adicionar Livro
-      </button>
-      <button id="adicionarManual-btn" type="button" onclick="abrirModalManual()">
-        Adicionar Livro Manual
-      </button>
-      <button id="adicionarCodigo-btn" type="button" onclick="abrirModalCodigo()">
-        Adicionar Livro pelo ISBN
-      </button>      
-    </div>
-  </header>
-
-  <div id="modalManual" class="modalManual">
-    <div class="modal-content">
-      <input id="tituloInput" type="text" placeholder="Titulo da obra..." required />
-      <input type="file" id="capaManual" name="capaManual" accept="image/*" required />
-      <input id="autorInput" type="text" placeholder="Nome do Autor..." />
-      <input id="codigoInput" type="number" placeholder="Código ISBN..." />
-      <input id="volumeInput" type="text" placeholder="Volume..." />
-      <input id="paginasInput" type="number" placeholder="Quantas páginas..." />
-      <input id="sinopseInput" type="text" placeholder="Sinopse..." />
-      <input id="dataInput" type="date" />
-      <div class="botoesModal">
-        <button onclick="adicionarLivroManual()">Adicionar</button>
-        <button onclick="fecharModalManual()">Cancelar</button>
+    <div id="modalManual" class="modalManual">
+      <div class="modal-content">
+        <input
+          id="tituloInput"
+          type="text"
+          placeholder="Titulo da obra..."
+          required
+        />
+        <input
+          type="file"
+          id="capaManual"
+          name="capaManual"
+          accept="image/*"
+          required
+        />
+        <input id="autorInput" type="text" placeholder="Nome do Autor..." />
+        <input id="codigoInput" type="number" placeholder="Código ISBN..." />
+        <input id="editoraInput" type="text" placeholder="Editora..." />
+        <input id="serieInput " type="text" placeholder="Série..." />
+        <input id="volumeInput" type="text" placeholder="Volume..." />
+        <input
+          id="paginasInput"
+          type="number"
+          placeholder="Quantas páginas..."
+        />
+        <input id="sinopseInput" type="text" placeholder="Sinopse..." />
+        <input id="dataInput" type="date" />
+        <div class="botoesModal">
+          <button onclick="adicionarLivroManual()">Adicionar</button>
+          <button onclick="fecharModalManual()">Cancelar</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div id="modalCodigo" class="modalCodigo">
-    <div class="modal-content">
-      <h2>Informe o código ISBN:</h2>
-      <input type="number" id="isbnInput" />
-      <button type="button" onclick="buscarPorISBN()">
-        Buscar e Adicionar
-      </button>
-      <button type="button" onclick="fecharModalCodigo()" class="fecharModalCodigo">
-        Cancelar
-      </button>
-    </div>
-  </div>
-
-  <div id="modalPerfil" class="modalPerfil">
-    <div class="modalPerfil-content">
-      <h2>Informe o seu nome</h2>
-      <input type="text" id="nomeInput" placeholder="Nome..." />
-
-      <div class="genero">
-        <label><input type="radio" name="genero" value="feminino" checked />
-          Feminino</label>
-        <label><input type="radio" name="genero" value="masculino" />
-          Masculino</label>
+    <div id="modalCodigo" class="modalCodigo">
+      <div class="modal-content">
+        <h2>Informe o código ISBN:</h2>
+        <input type="number" id="isbnInput" />
+        <button type="button" onclick="buscarPorISBN()">
+          Buscar e Adicionar
+        </button>
+        <button
+          type="button"
+          onclick="fecharModalCodigo()"
+          class="fecharModalCodigo"
+        >
+          Cancelar
+        </button>
       </div>
+    </div>
 
-      <button type="button" class="ConfirmarNome">Confirmar</button>
-      <button type="button" onclick="fecharModalPerfil()" class="fechaPerfilEdit">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <div id="modalPerfil" class="modalPerfil">
+      <div class="modalPerfil-content">
+        <h2>Entrar ou Cadastrar</h2>
+        <input type="email" id="emailInput" placeholder="E-mail" required />
+        <input type="password" id="senhaInput" placeholder="Senha" required />
+        <div class="botoesModal">
+          <button type="button" onclick="loginUsuario()">Entrar</button>
+          <button type="button" onclick="cadastrarUsuario()">Cadastrar</button>
+          <button
+            type="button"
+            onclick="fecharModalPerfil()"
+            class="fechaPerfilEdit"
+          >
+            Cancelar
+          </button>
+        </div>
+        <div id="erroAuth" style="color: red; margin-top: 10px"></div>
+      </div>
+    </div>
+
+    <div id="livros-container"></div>
+    <div id="livro-preview" style="display: none"></div>
+
+    <div class="botoes-ordenacao">
+      <button id="alternar-visualizacao" class="btn-lista" type="button">
+        <span class="material-symbols-outlined" id="icone-visualizacao"
+          >list</span
+        >
+      </button>
+      <button class="btn-lista" onclick="ordenarAZ()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-sort-alpha-down"
+          viewBox="0 0 16 16"
+        >
           <path
-            d="M 7.21875 5.78125 L 5.78125 7.21875 L 14.5625 16 L 5.78125 24.78125 L 7.21875 26.21875 L 16 17.4375 L 24.78125 26.21875 L 26.21875 24.78125 L 17.4375 16 L 26.21875 7.21875 L 24.78125 5.78125 L 16 14.5625 Z">
-          </path>
+            fill-rule="evenodd"
+            d="M10.082 5.629 9.664 7H8.598l1.789-5.332h1.234L13.402 7h-1.12l-.419-1.371zm1.57-.785L11 2.687h-.047l-.652 2.157z"
+          />
+          <path
+            d="M12.96 14H9.028v-.691l2.579-3.72v-.054H9.098v-.867h3.785v.691l-2.567 3.72v.054h2.645zM4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293z"
+          />
         </svg>
       </button>
-    </div>
-  </div>
-
-  <div id="livros-container"></div>
-  <div id="livro-preview" style="display: none"></div>
-
-
-  <div class="botoes-ordenacao">
-    <button id="alternar-visualizacao" class="btn-lista" type="button">
-      <span class="material-symbols-outlined" id="icone-visualizacao">list</span>
-    </button>
-    <button class="btn-lista" onclick="ordenarAZ()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-alpha-down"
-        viewBox="0 0 16 16">
-        <path fill-rule="evenodd"
-          d="M10.082 5.629 9.664 7H8.598l1.789-5.332h1.234L13.402 7h-1.12l-.419-1.371zm1.57-.785L11 2.687h-.047l-.652 2.157z" />
-        <path
-          d="M12.96 14H9.028v-.691l2.579-3.72v-.054H9.098v-.867h3.785v.691l-2.567 3.72v.054h2.645zM4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293z" />
-      </svg>
-    </button>
-    <button class="btn-lista" onclick="ordenarZA()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-        class="bi bi-sort-alpha-down-alt" viewBox="0 0 16 16">
-        <path d="M12.96 7H9.028v-.691l2.579-3.72v-.054H9.098v-.867h3.785v.691l-2.567 3.72v.054h2.645z" />
-        <path fill-rule="evenodd"
-          d="M10.082 12.629 9.664 14H8.598l1.789-5.332h1.234L13.402 14h-1.12l-.419-1.371zm1.57-.785L11 9.688h-.047l-.652 2.156z" />
-        <path
-          d="M4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293z" />
-      </svg>
-    </button>
-    <button class="btn-lista" onclick="ordemPadrao()">
-      <span class="material-symbols-outlined">
-        filter_alt_off
-      </span>
-    </button>
-  </div>
-
-  <div class="logo-container">
-    <img src="img/Logo design for 'Est.png" alt="logo" class="logo" />
-  </div>
-
-  <!-- Modal -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h2>Adicionar Livro</h2>
-      <input type="text" id="tituloBuscaInput" placeholder="Título do livro" />
-      <input type="text" id="autorBuscaInput" placeholder="Autor" />
-      <button type="button" onclick="buscarELivro()">
-        Buscar e Adicionar
+      <button class="btn-lista" onclick="ordenarZA()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-sort-alpha-down-alt"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M12.96 7H9.028v-.691l2.579-3.72v-.054H9.098v-.867h3.785v.691l-2.567 3.72v.054h2.645z"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M10.082 12.629 9.664 14H8.598l1.789-5.332h1.234L13.402 14h-1.12l-.419-1.371zm1.57-.785L11 9.688h-.047l-.652 2.156z"
+          />
+          <path
+            d="M4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293z"
+          />
+        </svg>
       </button>
-      <button type="button" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-lista" onclick="ordemPadrao()">
+        <span class="material-symbols-outlined"> filter_alt_off </span>
+      </button>
     </div>
-  </div>
 
-  <script src="js/app.js"></script>
-</body>
+    <div class="logo-container">
+      <img src="img/Logo design for 'Est.png" alt="logo" class="logo" />
+    </div>
 
+    <!-- Modal -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <h2>Adicionar Livro</h2>
+        <input
+          type="text"
+          id="tituloBuscaInput"
+          placeholder="Título do livro"
+        />
+        <input type="text" id="autorBuscaInput" placeholder="Autor" />
+        <button type="button" onclick="buscarELivro()">
+          Buscar e Adicionar
+        </button>
+        <button type="button" onclick="fecharModal()">Cancelar</button>
+      </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="js/app.js"></script>
+  </body>
 </html>

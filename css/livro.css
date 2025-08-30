@@ -166,6 +166,15 @@ button:active {
   overflow-y: auto;
 }
 
+.linha-flex {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+.linha-flex .item {
+  margin-bottom: 0;
+}
+
 @media (max-width: 900px) {
   .card {
     width: 100%;
