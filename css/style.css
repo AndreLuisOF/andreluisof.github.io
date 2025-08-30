@@ -513,9 +513,18 @@ header.cabecalho h1 {
   }
 }
 
-@media (max-height: 800px) {
+@media (max-height: 900px) {
   .logo-container {
-    height: 580px;
+    height: 540px;
+    width: 580px;
+  }
+  #livro-preview {
+    height: 540px;
+    width: 580px;
+  }
+  .botoes-ordenacao {
+    bottom: 10px;
+    right: 370px;
   }
 }
 
