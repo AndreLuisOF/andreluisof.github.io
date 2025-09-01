@@ -21,6 +21,8 @@
         >
         <h1>Minha Estante</h1>
         <div id="contador-livros">0 Livros</div>
+        <h1>Minha Estante</h1>
+        <div id="contador-livros">0 Livros</div>
       </div>
       <div class="botoes-cabecalho">
         <input
@@ -41,6 +43,27 @@
         </button>
       </div>
     </header>
+
+    <div id="livros-container"></div>
+    <div id="livro-preview" style="display: none"></div>
+
+    <div class="logo-container">
+      <img src="img/logo.png" alt="logo" class="logo" />
+    </div>
+
+    <div class="filters">
+      <button id="alternar-visualizacao">
+        <span class="material-symbols-outlined" id="icone-visualizacao"
+          >dehaze</span
+        >
+      </button>
+      <button id="sortByName">
+        <span class="material-symbols-outlined"> sort_by_alpha </span>
+      </button>
+      <button id="removeFilters">
+        <span class="material-symbols-outlined"> filter_none </span>
+      </button>
+    </div>
 
     <div id="livros-container"></div>
     <div id="livro-preview" style="display: none"></div>
@@ -100,6 +123,12 @@
     <div id="modal" class="modal">
       <div class="modal-content">
         <h2>Adicionar Livro</h2>
+        <input
+          type="text"
+          id="tituloBuscaInput"
+          placeholder="Título do livro"
+        />
+        <input type="text" id="autorBuscaInput" placeholder="Autor" />
         <input
           type="text"
           id="tituloBuscaInput"
