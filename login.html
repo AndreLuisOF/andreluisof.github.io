@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login/Cadastro</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.png" />
+    <link rel="stylesheet" href="css/login.css" />
+  </head>
+  <body>
+    <section id="loginSection">
+      <h2>Login</h2>
+      <!-- Formulário de Login -->
+      <form id="loginForm">
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Senha" required />
+        <button type="submit">Entrar</button>
+        <button type="button" id="btnToCadastro">Cadastrar</button>
+        <!-- Link para recuperação de senha -->
+        <a href="#" id="btnToRecuperar">Esqueci minha senha</a>
+        <p
+          id="erroLogin"
+          style="color: red; display: none; margin-top: 10px"
+        ></p>
+      </form>
+    </section>
+
+    <section id="cadastroSection" style="display: none">
+      <h2>Cadastro</h2>
+      <!-- Formulário de Cadastro -->
+      <form id="cadastroForm">
+        <input type="text" name="nome" placeholder="Nome" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Senha" required />
+        <button type="submit">Cadastrar</button>
+        <button type="button" id="btnToLogin">Já possuo conta</button>
+      </form>
+    </section>
+
+    <!-- Seção de recuperação de senha -->
+    <section id="recuperarSection" style="display: none">
+      <h2>Recuperar Senha</h2>
+      <form id="recuperarForm">
+        <input
+          type="email"
+          name="email"
+          placeholder="Informe seu email"
+          required
+        />
+        <button type="submit">Enviar</button>
+        <button type="button" id="btnReturnLogin">Voltar ao Login</button>
+      </form>
+    </section>
+
+    <!-- Scripts do Firebase (modular v9+) -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <!-- Seu script de inicialização e login -->
+    <script src="js/login.js"></script>
+  </body>
+</html>

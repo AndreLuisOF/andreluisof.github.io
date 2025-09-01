@@ -1,330 +1,358 @@
-let livros = JSON.parse(localStorage.getItem("bibliotecaLivros")) || [];
-let modoLista = localStorage.getItem("modoLista") === "true";
+// Sua configuração do Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDpi4DaxqYveqRcWYdv9rN_qGERCMDSajM",
+  authDomain: "bookshelf-7b686.firebaseapp.com",
+  projectId: "bookshelf-7b686",
+  storageBucket: "bookshelf-7b686.firebasestorage.app",
+  messagingSenderId: "263637972371",
+  appId: "1:263637972371:web:48b1af61e6c0ce11b3e466",
+  measurementId: "G-JEXXLW31GX",
+};
 
-// Funções genéricas para abrir/fechar modais
-function abrirModalPorId(id) {
-  document.getElementById(id).style.display = "flex";
-}
+firebase.initializeApp(firebaseConfig);
 
-function fecharModalPorId(id, campos = []) {
-  document.getElementById(id).style.display = "none";
-  campos.forEach((campo) => {
-    const el = document.getElementById(campo);
-    if (el) el.value = "";
+// Inicializa Firestore
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    carregarLivros(user.uid);
+  }
+});
+
+let modoLista = false;
+let livrosCarregados = [];
+let ordenarPorAutor = false;
+let ordemAutoresAscendente = true;
+let filtroAtivo = "padrao"; // "padrao", "autorAsc", "autorDesc"
+
+function atualizarVisualizacao(uid) {
+  livrosContainer.innerHTML = "";
+  livrosCarregados.forEach(({ livro, livroId }) => {
+    renderizarLivro(livro, uid, livroId);
   });
 }
 
-// Modais específicos
-function abrirModal() {
-  abrirModalPorId("modal");
-}
-function fecharModal() {
-  fecharModalPorId("modal", ["tituloInput", "autorInput"]);
-}
-function abrirModalCodigo() {
-  abrirModalPorId("modalCodigo");
-}
-function fecharModalCodigo() {
-  fecharModalPorId("modalCodigo", ["isbnInput"]);
-}
-function abrirModalManual() {
-  abrirModalPorId("modalManual");
-}
-function fecharModalManual() {
-  fecharModalPorId("modalManual", [
-    "tituloInput",
-    "capaManual",
-    "autorInput",
-    "codigoInput",
-    "volumeInput",
-    "paginasInput",
-    "sinopseInput",
-    "dataInput",
-  ]);
-}
-function abrirModalPerfil() {
-  abrirModalPorId("modalPerfil");
-}
-function fecharModalPerfil() {
-  fecharModalPorId("modalPerfil");
-}
+const botaoVisualizacao = document.getElementById("alternar-visualizacao");
+const iconeVisualizacao = document.getElementById("icone-visualizacao");
 
-// Busca por título e autor
-function buscarELivro() {
-  const titulo = document.getElementById("tituloInput").value;
-  const autor = document.getElementById("autorInput").value;
+botaoVisualizacao.addEventListener("click", () => {
+  modoLista = !modoLista;
+  iconeVisualizacao.textContent = modoLista ? "dashboard" : "dehaze";
 
-  if (!titulo || !autor) {
-    alert("Preencha título e autor!");
-    return;
+  // Adiciona ou remove a classe 'modo-lista' no container
+  if (modoLista) {
+    livrosContainer.classList.add("modo-lista");
+  } else {
+    livrosContainer.classList.remove("modo-lista");
   }
 
-  const query = `intitle:${titulo}+inauthor:${autor}`;
-  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-    query
-  )}`;
+  const user = auth.currentUser;
+  if (user) atualizarVisualizacao(user.uid);
+});
 
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data.items || data.items.length === 0) {
-        alert("Livro não encontrado.");
-        return;
-      }
+const botaoOrdenar = document.getElementById("sortByName");
 
-      const livro = data.items[0].volumeInfo;
-      const livroObj = criarLivroObj(livro);
+botaoOrdenar.addEventListener("click", () => {
+  if (filtroAtivo === "autorAsc") {
+    filtroAtivo = "autorDesc";
+  } else {
+    filtroAtivo = "autorAsc";
+  }
 
-      livros.push(livroObj);
-      localStorage.setItem("bibliotecaLivros", JSON.stringify(livros));
-      renderizarLivros();
-      fecharModal();
+  aplicarFiltro();
+});
+
+const botaoRemoverFiltros = document.getElementById("removeFilters");
+
+botaoRemoverFiltros.addEventListener("click", () => {
+  filtroAtivo = "padrao";
+  aplicarFiltro();
+});
+
+function aplicarFiltro() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  if (filtroAtivo === "padrao") {
+    carregarLivros(user.uid); // Recarrega do Firestore com ordem por timestamp
+  } else {
+    livrosCarregados.sort((a, b) => {
+      const autorA = (a.livro.autor || "").toLowerCase();
+      const autorB = (b.livro.autor || "").toLowerCase();
+
+      if (autorA < autorB) return filtroAtivo === "autorAsc" ? -1 : 1;
+      if (autorA > autorB) return filtroAtivo === "autorAsc" ? 1 : -1;
+      return 0;
+    });
+
+    atualizarVisualizacao(user.uid);
+  }
+}
+
+// Referência ao container de livros
+const livrosContainer = document.getElementById("livros-container");
+
+function deslogarUsuario() {
+  auth
+    .signOut()
+    .then(() => {
+      console.log("Usuário deslogado com sucesso.");
+      window.location.href = "login.html"; // Redireciona para a tela de login
     })
-    .catch(() => {
-      alert("Erro ao buscar o livro. Verifique a conexão.");
+    .catch((error) => {
+      console.error("Erro ao deslogar:", error.message);
     });
 }
 
-// Busca por ISBN
-function buscarPorISBN() {
-  const isbn = document.getElementById("isbnInput").value.trim();
+// Função para renderizar um livro
+function renderizarLivro(livro, uid, livroId) {
+  const div = document.createElement("div");
+  div.classList.add("livro");
 
-  if (!isbn) {
-    alert("Digite o código ISBN!");
-    return;
+  const data = livro.timestamp?.toDate();
+  const dataFormatada = data
+    ? data.toLocaleDateString("pt-BR")
+    : "Data desconhecida";
+
+  if (modoLista) {
+    div.classList.add("lista");
+  } else {
+    div.classList.add("livro-card"); // estilo original em grid
   }
-
-  const query = `isbn:${isbn}`;
-  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-    query
-  )}`;
-
-  fetch(url)
-    .then((response) => response.json())
-    .then((data) => {
-      if (!data.items || data.items.length === 0) {
-        alert("Livro não encontrado com esse ISBN.");
-        return;
-      }
-
-      const livro = data.items[0].volumeInfo;
-      const livroObj = criarLivroObj(livro, isbn);
-
-      const jaExiste = livros.some((l) => l.isbn === livroObj.isbn);
-      if (jaExiste) {
-        alert("Esse livro já está na sua biblioteca.");
-        return;
-      }
-
-      livros.push(livroObj);
-      localStorage.setItem("bibliotecaLivros", JSON.stringify(livros));
-      renderizarLivros();
-      fecharModalCodigo();
-    })
-    .catch(() => {
-      alert("Erro ao buscar o livro. Verifique a conexão.");
-    });
-}
-
-// Cria objeto livro padronizado
-function criarLivroObj(livro, isbnFallback = "Não disponível") {
-  return {
-    titulo: livro.title,
-    autor: livro.authors?.join(", ") || "Autor desconhecido",
-    capa:
-      livro.imageLinks?.extraLarge ||
-      livro.imageLinks?.large ||
-      livro.imageLinks?.medium ||
-      livro.imageLinks?.thumbnail ||
-      livro.imageLinks?.smallThumbnail ||
-      "https://via.placeholder.com/300x450?text=Sem+Capa",
-    volume: livro.subtitle || "",
-    dataLancamento: livro.publishedDate || "Não informada",
-    paginas: livro.pageCount || "N/D",
-    isbn: livro.industryIdentifiers?.[0]?.identifier || isbnFallback,
-    descricao: livro.description || "Sinopse não disponível.",
-  };
-}
-
-// Cria card de livro (usado em renderizar e filtrar)
-function criarCardLivro(livro, index) {
-  const card = document.createElement("div");
-  card.className = "livro";
-  if (modoLista) card.classList.add("lista");
 
   const img = document.createElement("img");
-  img.src = livro.capa || "https://via.placeholder.com/300x450?text=Sem+Capa";
-  img.alt = livro.titulo;
+  img.src = livro.capa || "img/default.png";
+  img.alt = livro.titulo || "Capa do livro";
 
-  const info = document.createElement("div");
-  info.className = "info-livro";
-  info.innerHTML = `
-    <h3>${livro.titulo}</h3>
-    <p>${livro.autor}</p>
+  // Preview ao passar o mouse
+  div.addEventListener("mouseenter", () => mostrarPreviewLivro(livro));
+  div.addEventListener("mouseleave", esconderPreviewLivro);
+
+  // Ícone de exclusão
+  const iconeExcluir = document.createElement("span");
+  iconeExcluir.classList.add(
+    "material-symbols-outlined",
+    "btn-excluir",
+    "excluir-btn"
+  );
+  iconeExcluir.textContent = "delete";
+  iconeExcluir.onclick = () => excluirLivro(uid, livroId);
+
+  div.appendChild(img);
+
+  if (modoLista) {
+    const info = document.createElement("div");
+    info.classList.add("info-livro");
+
+    const titulo = document.createElement("h3");
+    titulo.textContent = livro.titulo || "Sem título";
+
+    const autor = document.createElement("p");
+    autor.textContent = livro.autor || "Autor desconhecido";
+
+    info.appendChild(titulo);
+    info.appendChild(autor);
+    div.appendChild(info);
+  }
+
+  div.appendChild(iconeExcluir);
+  livrosContainer.insertBefore(div, livrosContainer.firstChild);
+}
+
+// Carrega livros do usuário logado
+function carregarLivros(uid) {
+  db.collection("usuarios")
+    .doc(uid)
+    .collection("livros")
+    .orderBy("timestamp", "desc")
+    .get()
+    .then((snapshot) => {
+      livrosCarregados = [];
+
+      snapshot.forEach((doc) => {
+        const livro = doc.data();
+        const livroId = doc.id;
+        livrosCarregados.push({ livro, livroId });
+      });
+
+      atualizarVisualizacao(uid);
+
+      // Atualiza contador de livros
+      document.getElementById("contador-livros").textContent = `${
+        livrosCarregados.length
+      } Livro${livrosCarregados.length !== 1 ? "s" : ""}`;
+    })
+    .catch((error) => {
+      console.error("Erro ao carregar livros:", error);
+      alert("Não foi possível carregar os livros.");
+    });
+}
+
+// Adiciona livro ao Firestore
+function salvarLivro(uid, livro) {
+  livro.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+
+  db.collection("usuarios")
+    .doc(uid)
+    .collection("livros")
+    .add(livro)
+    .then((docRef) => {
+      // Aguarda o documento ser salvo com timestamp resolvido
+      return docRef.get();
+    })
+    .then(() => {
+      // Agora sim, recarrega a lista com o timestamp válido
+      carregarLivros(uid);
+    })
+    .catch((error) => {
+      console.error("Erro ao salvar livro:", error);
+      alert("Não foi possível salvar o livro.");
+    });
+}
+
+function excluirLivro(uid, livroId) {
+  if (confirm("Tem certeza que deseja excluir este livro?")) {
+    db.collection("usuarios")
+      .doc(uid)
+      .collection("livros")
+      .doc(livroId)
+      .delete()
+      .then(() => {
+        console.log("Livro excluído com sucesso.");
+        carregarLivros(uid); // Atualiza a lista
+      })
+      .catch((error) => {
+        console.error("Erro ao excluir livro:", error);
+        alert("Não foi possível excluir o livro.");
+      });
+  }
+}
+
+// Busca livro pela API do Google Books
+function buscarELivro() {
+  const titulo = document.getElementById("tituloBuscaInput").value;
+  const autor = document.getElementById("autorBuscaInput").value;
+  const query = `${titulo} ${autor}`;
+
+  fetch(
+    `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.items && data.items.length > 0) {
+        const info = data.items[0].volumeInfo;
+        const sale = data.items[0].saleInfo;
+
+        const livro = {
+          titulo: info.title || "Sem título",
+          autor: (info.authors && info.authors.join(", ")) || "Desconhecido",
+          editora: info.publisher || "",
+          isbn: info.industryIdentifiers?.[0]?.identifier || "",
+          paginas: info.pageCount || "",
+          sinopse: info.description || "",
+          capa: info.imageLinks?.thumbnail || "",
+        };
+
+        const user = auth.currentUser;
+        if (user) salvarLivro(user.uid, livro);
+        fecharModal();
+      } else {
+        alert("Livro não encontrado.");
+      }
+    })
+    .catch((error) => {
+      console.error("Erro na busca:", error);
+      alert("Erro ao buscar livro.");
+    });
+}
+
+function mostrarPreviewLivro(livro) {
+  const preview = document.getElementById("livro-preview");
+  preview.style.display = "block";
+
+  preview.innerHTML = `
+    <h2>${livro.titulo || "Sem título"}</h2>
+    <img src="${livro.capa || "https://via.placeholder.com/128x192?text=Sem+Capa"}" alt="Capa do livro" />
+
+    <p><strong>Autor:</strong> ${livro.autor || "—"}</p>
+    <p><strong>Editora:</strong> ${livro.editora || "—"}</p>
+    <p><strong>Volume:</strong> ${livro.volume || "—"}</p>
+    <p><strong>Série:</strong> ${livro.serie || "—"}</p>
+    <p><strong>Data de lançamento:</strong> ${livro.data || "—"}</p>
+    <p><strong>ISBN:</strong> ${livro.isbn || "—"}</p>
+    <p><strong>Número de páginas:</strong> ${livro.paginas || "—"}</p>
+
+    <p><strong>Sinopse:</strong></p>
+    <p>${livro.sinopse || "—"}</p>
   `;
-
-  const excluirBtn = document.createElement("button");
-  excluirBtn.className = "excluir-btn";
-  excluirBtn.innerHTML = `<span class="material-symbols-outlined">delete</span>`;
-  excluirBtn.onclick = (e) => {
-    e.stopPropagation();
-    livros.splice(index, 1);
-    localStorage.setItem("bibliotecaLivros", JSON.stringify(livros));
-    renderizarLivros();
-  };
-
-  card.onclick = () => {
-    localStorage.setItem("livroSelecionado", JSON.stringify(livro));
-    window.location.href = "livro.html";
-  };
-
-  card.onmouseenter = () => {
-    const preview = document.getElementById("livro-preview");
-    const sinopseLimitada =
-      livro.descricao.length > 300
-        ? livro.descricao.slice(0, 200) + "..."
-        : livro.descricao;
-
-    preview.innerHTML = `
-      <img src="${livro.capa}" alt="${livro.titulo}">
-      <h3>${livro.titulo}</h3>
-      ${livro.volume ? `<p><strong>Volume:</strong> ${livro.volume}</p>` : ""}
-      <p><strong>Autor:</strong> ${livro.autor}</p>
-      <p><strong>Data de lançamento:</strong> ${livro.dataLancamento}</p>
-      <p><strong>Páginas:</strong> ${livro.paginas}</p>
-      <p><strong>ISBN:</strong> ${livro.isbn}</p>
-      <div class="sinopse">
-        <h4>Sinopse</h4>
-        <p>${sinopseLimitada}</p>
-      </div>
-    `;
-    preview.style.display = "block";
-  };
-
-  card.onmouseleave = () => {
-    document.getElementById("livro-preview").style.display = "none";
-  };
-
-  if (modoLista) {
-    card.appendChild(img);
-    card.appendChild(info);
-  } else {
-    card.appendChild(img);
-  }
-
-  card.appendChild(excluirBtn);
-  return card;
 }
 
+function esconderPreviewLivro() {
+  const preview = document.getElementById("livro-preview");
+  preview.style.display = "none";
+  preview.innerHTML = ""; // Limpa conteúdo
+}
+
+// Adiciona livro manualmente
 function adicionarLivroManual() {
-  const titulo = document.getElementById("tituloInput").value.trim();
-  const autor =
-    document.getElementById("autorInput").value.trim() || "Autor desconhecido";
-  const isbn =
-    document.getElementById("codigoInput").value.trim() || "Não disponível";
-  const volume = document.getElementById("volumeInput").value.trim();
-  const paginas = document.getElementById("paginasINput").value.trim() || "N/D";
-  const descricao =
-    document.getElementById("sinopseInput").value.trim() ||
-    "Sinopse não disponível.";
-  const dataLancamento =
-    document.getElementById("dataInput").value || "Não informada";
-  const capaInput = document.getElementById("capaManual");
-
-  if (!titulo || !autor || !capaInput.files[0]) {
-    alert("Preencha título, autor e selecione uma capa!");
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const capa = e.target.result;
-
-    const livroObj = {
-      titulo,
-      autor,
-      capa,
-      volume,
-      dataLancamento,
-      paginas,
-      isbn,
-      descricao,
-    };
-
-    livros.push(livroObj);
-    localStorage.setItem("bibliotecaLivros", JSON.stringify(livros));
-    renderizarLivros();
-    fechaModalManual();
+  const livro = {
+    titulo: document.getElementById("tituloInput").value,
+    autor: document.getElementById("autorInput").value,
+    editora: document.getElementById("editoraInput").value,
+    isbn: document.getElementById("codigoInput").value,
+    paginas: document.getElementById("paginasInput").value,
+    sinopse: document.getElementById("sinopseInput").value,
+    capa: "", // Você pode implementar upload de imagem no Firebase Storage depois
   };
 
-  reader.readAsDataURL(capaInput.files[0]);
+  const user = auth.currentUser;
+  if (user) salvarLivro(user.uid, livro);
+  fecharModalManual();
 }
 
-// Renderiza todos os livros
-function renderizarLivros() {
-  const container = document.getElementById("livros-container");
-  container.innerHTML = "";
-  livros.forEach((livro, index) => {
-    container.appendChild(criarCardLivro(livro, index));
-  });
+function abrirModal() {
+  document.getElementById("tituloBuscaInput").value = "";
+  document.getElementById("modal").style.display = "flex";
 }
 
-// Filtra livros pelo termo buscado
-function filtrarLivros() {
-  const termo = document.getElementById("Buscar").value.toLowerCase();
-  const container = document.getElementById("livros-container");
-  container.innerHTML = "";
+function abrirModalManual() {
+  document.getElementById("tituloInput").value = "";
+  document.getElementById("capaManual").value = "";
+  document.getElementById("autorInput").value = "";
+  document.getElementById("codigoInput").value = "";
+  document.getElementById("editoraInput").value = "";
+  document.getElementById("serieInput").value = "";
+  document.getElementById("volumeInput").value = "";
+  document.getElementById("paginasInput").value = "";
+  document.getElementById("sinopseInput").value = "";
+  document.getElementById("dataInput").value = "";
+  document.getElementById("modalManual").style.display = "flex";
+}
 
-  livros.forEach((livro, index) => {
-    const titulo = livro.titulo.toLowerCase();
-    const autor = livro.autor.toLowerCase();
+function abrirLogoutModal() {
+  document.getElementById("modalLogout").style.display = "flex";
+}
 
-    if (titulo.includes(termo) || autor.includes(termo)) {
-      container.appendChild(criarCardLivro(livro, index));
-    }
-  });
+// Fecha modais
+function fecharModal() {
+  document.getElementById("modal").style.display = "none";
+}
+function fecharModalManual() {
+  document.getElementById("modalManual").style.display = "none";
+}
+function fecharModalLogout() {
+  document.getElementById("modalLogout").style.display = "none";
+}
 
-  if (modoLista) {
-    container.classList.add("modo-lista");
+// Autenticação
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    console.log("Usuário autenticado:", user.uid);
+    carregarLivros(user.uid);
   } else {
-    container.classList.remove("modo-lista");
+    console.warn("Usuário não autenticado");
+    window.location.href = "login.html";
   }
-}
-
-// Executa ao carregar a página
-renderizarLivros();
-const perfilSalvo = JSON.parse(localStorage.getItem("perfilUsuario"));
-if (perfilSalvo?.nome && perfilSalvo?.artigo) {
-  const titulo = document.querySelector("h1");
-  titulo.textContent = `Estante ${perfilSalvo.artigo} ${perfilSalvo.nome}`;
-}
-
-const container = document.getElementById("livros-container");
-const icone = document.getElementById("icone-visualizacao");
-
-// Aplica o modo salvo na interface
-if (modoLista) {
-  container.classList.add("modo-lista");
-  icone.textContent = "dashboard";
-} else {
-  container.classList.remove("modo-lista");
-  icone.textContent = "list";
-}
-
-// Evento de clique para alternar e salvar no localStorage
-document
-  .getElementById("alternar-visualizacao")
-  .addEventListener("click", () => {
-    modoLista = !modoLista;
-    localStorage.setItem("modoLista", modoLista);
-
-    if (modoLista) {
-      container.classList.add("modo-lista");
-      icone.textContent = "dashboard";
-    } else {
-      container.classList.remove("modo-lista");
-      icone.textContent = "list";
-    }
-
-    renderizarLivros();
-  });
+});

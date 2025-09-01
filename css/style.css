@@ -1,8 +1,13 @@
-/* Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  background-color: #f0f0f0;
 }
 
 body {
@@ -15,7 +20,6 @@ body {
   align-items: center;
 }
 
-/* Cabeçalho */
 header.cabecalho {
   width: 100%;
   border-radius: 8px;
@@ -29,25 +33,41 @@ header.cabecalho {
   margin-bottom: 25px;
 }
 
-header.cabecalho h1 {
-  font-size: 28px;
-  font-weight: bold;
-  font-family: "Segoe UI", sans-serif;
-}
-
 .perfil {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
-.perfil span,
-.PerfilEdit {
-  padding: 10px;
+.perfil span {
+  font-size: 40px;
   cursor: pointer;
+  transition: color 0.3s;
 }
 
-/* Botões do cabeçalho */
+header.cabecalho h1 {
+  font-size: 28px;
+  font-weight: bold;
+  font-family: "Segoe UI", sans-serif;
+}
+
+#contador-livros {
+  font-size: 16px;
+  font-weight: 600;
+  font-family: "Segoe UI", sans-serif;
+  color: #f5f5f5;
+  background-color: #213e7c;
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+#contador-livros:hover {
+  background-color: #1fb5f0;
+  transform: scale(1.05);
+}
+
 .botoes-cabecalho {
   display: flex;
   gap: 10px;
@@ -90,7 +110,47 @@ header.cabecalho h1 {
   box-shadow: 0 0 8px rgba(46, 125, 50, 0.3);
 }
 
-/* Container de livros */
+.modal,
+.modalCodigo,
+.modalManual,
+.modalLogout {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 25px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  animation: fadeIn 0.3s;
+  position: relative;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.modal-content button,
+.ConfirmarNome {
+  width: 48%;
+  margin: 5px 1%;
+  padding: 10px;
+}
+
 #livros-container {
   position: fixed;
   top: 140px;
@@ -100,8 +160,8 @@ header.cabecalho h1 {
   gap: 20px;
   padding: 20px;
   width: 100%;
-  max-width: 950px;
-  max-height: 570px;
+  max-width: 1200px;
+  max-height: 745px;
   margin-bottom: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
@@ -123,8 +183,7 @@ header.cabecalho h1 {
   background-color: #555;
 }
 
-/* Card do livro */
-.livro {
+.livro-card {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
@@ -132,25 +191,24 @@ header.cabecalho h1 {
   position: relative;
   transition: transform 0.2s;
   width: 160px;
-  height: 255px;
+  height: 222px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.livro:hover {
+.livro-card:hover {
   transform: scale(1.04);
 }
 
-.livro img {
+.livro-card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 6px;
 }
 
-/* Botão de exclusão */
-.excluir-btn {
+.btn-excluir {
   background-color: rgba(255, 255, 255, 0.8);
   border: none;
   position: absolute;
@@ -170,34 +228,67 @@ header.cabecalho h1 {
   transform: scale(0.95);
 }
 
-.excluir-btn .material-symbols-outlined {
+.btn-excluir .material-symbols-outlined {
   font-size: 20px;
   transition: transform 0.2s;
 }
 
-.livro:hover .excluir-btn {
+.livro-card:hover .btn-excluir {
   opacity: 1;
   transform: scale(1.05);
 }
 
-.excluir-btn:hover {
+.btn-excluir:hover {
   background-color: rgba(255, 255, 255, 0.95);
   transform: scale(1.15);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
 }
 
-.excluir-btn:focus {
+.btn-excluir:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
 }
 
-/* Preview do livro */
+
+.btnOption {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  right: 30px;
+  top: 130px;
+  width: 600px;
+  height: 715px;
+  background: linear-gradient(
+    145deg,
+    rgba(85, 85, 85, 0.3),
+    rgba(34, 34, 34, 0.3)
+  );
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.logo {
+  width: 100%;
+  z-index: 1;
+}
+
 #livro-preview {
+  display: none;
   position: absolute;
   top: 130px;
   right: 30px;
-  width: 500px;
-  height: 520px;
+  width: 600px;
+  height: 715px;
   background-color: #fff;
   padding: 24px;
   box-shadow: -2px 0 12px rgba(0, 0, 0, 0.2);
@@ -237,109 +328,6 @@ header.cabecalho h1 {
   line-height: 1.5;
 }
 
-/* Modais */
-.modal,
-.modalPerfil,
-.modalCodigo,
-.modalManual {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content,
-.modalPerfil-content {
-  background-color: #fff;
-  padding: 25px;
-  width: 100%;
-  max-width: 400px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  text-align: center;
-  animation: fadeIn 0.3s;
-  position: relative;
-}
-
-.modal-content input,
-.modalPerfil-content input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.modal-content button,
-.ConfirmarNome {
-  width: 48%;
-  margin: 5px 1%;
-  padding: 10px;
-}
-
-.modalPerfil h2 {
-  text-align: left;
-}
-
-.genero {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-.genero label {
-  display: inline-flex;
-  align-items: center;
-  font-size: 14px;
-  cursor: pointer;
-  gap: 10px;
-}
-
-/* Botão de fechar modal perfil */
-.fechaPerfilEdit {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  transition: transform 0.2s;
-}
-
-.fechaPerfilEdit:hover {
-  transform: scale(1.1);
-}
-
-.fechaPerfilEdit svg {
-  fill: #555;
-}
-
-/* Lista/grid da biblioteca */
-.btn-lista {
-  position: fixed;
-  bottom: 10px;
-  right: 475px;
-  background-color: #362192;
-  color: #f5f5f5;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-lista:hover {
-  background-color: #1fb5f0;
-}
-
-/* Modo lista */
 #livros-container.modo-lista {
   display: block;
   padding: 10px 20px;
@@ -404,67 +392,28 @@ header.cabecalho h1 {
   transform: scale(1.2);
 }
 
-/* Logo */
-.logo-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.filters {
+  margin: 0;
+  padding: 0  ;
   position: fixed;
-  right: 30px;
-  top: 130px;
-  width: 500px;
-  height: 520px;
-  background: linear-gradient(
-    145deg,
-    rgba(85, 85, 85, 0.3),
-    rgba(34, 34, 34, 0.3)
-  );
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  bottom: 20px;
+  right: 470px;
+  z-index: 1001;
+  display: flex;
+  gap: 10px;
 }
 
-.logo {
-  width: 100%;
-  z-index: 1;
+.filters button {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #362192;
+  color: #f5f5f5;
+  transition: background-color 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Animação suave de entrada */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Responsivo */
-@media (max-width: 600px) {
-  #livros-container {
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  }
-  #adicionar-btn {
-    width: 100%;
-    max-width: 250px;
-  }
-  .livro {
-    width: 140px;
-    height: 210px;
-  }
-}
-
-/* Links */
-a {
-  color: #fff;
-  text-decoration: none;
-}
-
-/* Ícones Google */
-.material-symbols-outlined {
-  font-variation-settings: "FILL" 0, "wght" 600, "GRAD" 0, "opsz" 24;
+.filters button:hover {
+  background-color: #1fb5f0;
 }
